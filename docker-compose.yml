@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
+  webapp:
+    image: nginx:alpine
+    container_name: travel-inspo-web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./webapp:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+volumes:
+  ollama-data:
+    driver: local

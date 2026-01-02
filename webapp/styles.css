@@ -1,0 +1,61 @@
+/* Base tweaks while Tailwind handles most styles */
+html,body{height:100%}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:linear-gradient(180deg,#f6fafc 0%, #ffffff 100%);color:rgba(17,24,39,0.95);-webkit-font-smoothing:antialiased}
+
+/* Glass card helpers for light mode */
+.glass-card{background:rgba(255,255,255,0.8);border:1px solid rgba(15,23,42,0.06);backdrop-filter:blur(6px);}
+
+/* Tag input helpers (light) */
+.tags-input{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tags-list{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.tag-chip{display:inline-flex;align-items:center;gap:8px;background:#f1f5f9;padding:6px 10px;border-radius:999px;border:1px solid rgba(15,23,42,0.04);font-weight:600;color:rgba(17,24,39,0.9)}
+.tag-chip button{background:transparent;border:0;color:rgba(17,24,39,0.6);cursor:pointer}
+.tag-input{min-width:140px;padding:6px;border:0;background:transparent;color:rgba(17,24,39,0.9);outline:none}
+
+.suggestions{background:#ffffff;border:1px solid rgba(15,23,42,0.04);border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
+.suggestions .item{padding:8px 10px;cursor:pointer;color:rgba(17,24,39,0.85)}
+.suggestions .item:hover{background:#f8fafc}
+.suggestions.hidden{display:none}
+
+.history-item{background:#ffffff;padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.04)}
+.history-meta{font-size:13px;color:rgba(15,23,42,0.6)}
+
+/* Small animation helper */
+.fade-in{animation:fadeIn .36s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* Link styles for rendered markdown */
+.glass-card a, .history-item a, #card-fact a {
+	color: #0ea5e9; /* sky-500 */
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	font-weight: 600;
+	transition: color .18s ease, text-decoration-color .18s ease, transform .12s ease;
+}
+.glass-card a:hover, .history-item a:hover, #card-fact a:hover{
+	color: #0369a1; /* sky-700 */
+	transform: translateY(-1px);
+}
+
+/* Inline code inside markdown */
+.glass-card code, .history-item code{background:#eef2ff;padding:2px 6px;border-radius:6px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace}
+
+/* Link preview cards (beneath the main fact) */
+.link-previews{display:flex;flex-direction:column;gap:12px}
+.link-preview{display:flex;gap:12px;align-items:flex-start;background:#ffffff;border:1px solid rgba(15,23,42,0.04);padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(15,23,42,0.04)}
+.link-preview img{width:84px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0}
+.link-preview .meta{flex:1}
+.link-preview .meta h4{margin:0;font-size:15px;color:rgba(15,23,42,0.95)}
+.link-preview .meta p.desc{margin:6px 0 0 0;color:rgba(15,23,42,0.7);font-size:13px}
+.link-preview .meta p.extract{margin:8px 0 0 0;color:rgba(15,23,42,0.85);font-size:14px}
+
+/* History panel styles */
+#history-panel{background:transparent}
+#history-panel .p-4{background:transparent}
+#history-panel.hidden{display:none}
+#history-panel{transition:transform .28s ease,opacity .28s ease}
+
+/* Responsive: collapse sidebar on small screens */
+@media (max-width: 900px){
+	#history-panel{display:none}
+}
