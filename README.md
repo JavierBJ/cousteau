@@ -63,3 +63,12 @@ Each test demonstrates different testing patterns:
 - Error handling
 - Randomness testing with multiple iterations
 - Input validation
+
+### Continuous Integration
+
+Tests run automatically on every pull request via GitHub Actions. The workflow:
+- Runs all tests with `npm test`
+- Generates coverage reports with `npm run test:coverage`
+- Uploads coverage artifacts for review
+
+See `.github/workflows/test.yml` for the complete CI configuration.
