@@ -1,0 +1,17 @@
+{
+  "name": "travel-inspiration",
+  "version": "1.0.0",
+  "description": "Travel Inspiration web app with unit testing examples",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "vitest": "^1.1.0",
+    "jsdom": "^23.0.0",
+    "@vitest/ui": "^1.1.0",
+    "@vitest/coverage-v8": "^1.1.0"
+  }
+}
