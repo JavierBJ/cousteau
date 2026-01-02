@@ -11,6 +11,7 @@ const CATEGORIES = [
 
 let state = {
   selectedCountries: [],
+  selectedCategories: CATEGORIES.slice(), // Default to all categories
   factHistory: [],
   lastFactDate: null,
   lastCountry: null,
@@ -214,8 +215,12 @@ function pickCountry(){
 
 function pickCategoryForCountry(country){
   const used = state.perCountryCategories[country] || [];
-  const remaining = CATEGORIES.filter(c=>!used.includes(c));
-  const cat = remaining.length ? remaining[Math.floor(Math.random()*remaining.length)] : CATEGORIES[Math.floor(Math.random()*CATEGORIES.length)];
+  // Use only selected categories instead of all CATEGORIES
+  const availableCategories = state.selectedCategories && state.selectedCategories.length > 0
+    ? state.selectedCategories
+    : CATEGORIES;
+  const remaining = availableCategories.filter(c=>!used.includes(c));
+  const cat = remaining.length ? remaining[Math.floor(Math.random()*remaining.length)] : availableCategories[Math.floor(Math.random()*availableCategories.length)];
   return cat;
 }
 
@@ -224,7 +229,11 @@ function markCategoryUsed(country, category){
   if(!state.perCountryCategories[country].includes(category)){
     state.perCountryCategories[country].push(category);
   }
-  if(state.perCountryCategories[country].length >= CATEGORIES.length){
+  // Reset rotation after cycling through all selected categories
+  const availableCategories = state.selectedCategories && state.selectedCategories.length > 0
+    ? state.selectedCategories
+    : CATEGORIES;
+  if(state.perCountryCategories[country].length >= availableCategories.length){
     state.perCountryCategories[country] = []; // reset rotation after full cycle
   }
 }
@@ -317,6 +326,43 @@ function setupTagInput(){
   });
 }
 
+// Category selection helpers
+function toggleCategory(category){
+  if(!state.selectedCategories) state.selectedCategories = CATEGORIES.slice();
+  const idx = state.selectedCategories.indexOf(category);
+  if(idx > -1){
+    // Don't allow deselecting if it's the last one
+    if(state.selectedCategories.length <= 1){
+      alert('At least one topic must be selected.');
+      return;
+    }
+    state.selectedCategories.splice(idx, 1);
+  } else {
+    state.selectedCategories.push(category);
+  }
+  renderCategories();
+}
+
+function renderCategories(){
+  const container = $('categories-list');
+  if(!container) return;
+  container.innerHTML = '';
+  if(!state.selectedCategories || state.selectedCategories.length === 0){
+    state.selectedCategories = CATEGORIES.slice(); // Default to all
+  }
+  CATEGORIES.forEach(cat=>{
+    const isSelected = state.selectedCategories.includes(cat);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = cat;
+    btn.className = isSelected
+      ? 'px-3 py-2 rounded-lg text-sm font-medium bg-sky-600 text-white border border-sky-600 hover:bg-sky-700 transition'
+      : 'px-3 py-2 rounded-lg text-sm font-medium bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 transition';
+    btn.addEventListener('click', ()=>{ toggleCategory(cat); });
+    container.appendChild(btn);
+  });
+}
+
 async function callOllamaForFact(country, category){
   const prompt = buildPrompt(country, category);
   try{
@@ -385,6 +431,11 @@ function setupUI(){
     e.preventDefault();
     const raw = (state.selectedCountries || []).slice();
     if(raw.length<3 || raw.length>5){ alert('Select between 3 and 5 countries.'); return; }
+    // Validate at least one category is selected
+    if(!state.selectedCategories || state.selectedCategories.length === 0){
+      alert('At least one topic must be selected.');
+      return;
+    }
     // reset per-country categories for new countries
     raw.forEach(c=> state.perCountryCategories[c]=state.perCountryCategories[c]||[]);
     saveState();
@@ -406,8 +457,13 @@ async function init(){
     state.selectedCountries = state.selectedCountries.slice(0,5);
     saveState();
   }
+  // Ensure selectedCategories is initialized
+  if(!state.selectedCategories || state.selectedCategories.length === 0){
+    state.selectedCategories = CATEGORIES.slice();
+  }
   // Render saved tags without re-adding them to the array (avoids duplicates)
   renderTags();
+  renderCategories();
   renderHistory();
   renderTodayCard(state.factHistory[0]);
   // Assume model is available (managed by deployment); enable generate button.
